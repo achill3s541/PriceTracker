@@ -129,15 +129,15 @@ func compareContToJSON(variant []string, priceJSON []float64, priceContent []flo
 
 func emailSender(messageInput string) error {
 	//This function is responsible for sending email if the Webiste's price is lower then JSON's price.
-	authentication := smtp.PlainAuth("", "<write_email_addres>", "<write-password>", "smtp.gmail.com")
-	sendingTo := []string{"<write_email_addres>"}
-	sender := fmt.Sprintf("From: <%s>\r\n", "<write_email_addres>")
-	receiver := fmt.Sprintf("To: <%s>\r\n", "<write_email_addres>")
+	authentication := smtp.PlainAuth("", "<fill_email_addres>", "<fill_password>", "smtp.gmail.com")
+	sendingTo := []string{"<fill_email_addres>"}
+	sender := fmt.Sprintf("From: <%s>\r\n", "<fill_email_addres>")
+	receiver := fmt.Sprintf("To: <%s>\r\n", "<fill_email_addres>")
 	subject := "Subject: Message from Tracker\r\n"
 	body := messageInput + "\r\n"
 	//This variable builds a request for email
 	messaging := sender + receiver + subject + "\r\n" + body
-	err := smtp.SendMail("smtp.gmail.com:587", authentication, "<write_email_addres>", sendingTo, []byte(messaging))
+	err := smtp.SendMail("smtp.gmail.com:587", authentication, "<fill_email_addres>", sendingTo, []byte(messaging))
 	if err != nil {
 		return fmt.Errorf("the system cannot send email message: %s", err)
 	}
