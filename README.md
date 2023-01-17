@@ -1,0 +1,1 @@
+Inside this file I will write everthing what you should to know about this simple GOLANG's program. 
