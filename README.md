@@ -19,4 +19,4 @@ If you would like to track other product, you should to change the URL in main f
 <b>MANUAL:</b>
 
 This program should be run by cron. <br>For example it can be used to compare the product's price with the website's price every 4 hours.
-<br>Before you run the program first time, you should create the file called tracker_output.json. 
+<br>Before you run the program first time, you should create the file called <b>tracker_output.json</b>. 
