@@ -1,4 +1,4 @@
-<b>I call this program the Price tracker.</b>
+<b>I have called this program the Price tracker.</b>
 
 The main function of this program verifes the product's price on the webiste (on this moment it works only for https://zooplus.pl and only for one product with differents variants),
 compares with the price has saved in the file before.
