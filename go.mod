@@ -1,4 +1,4 @@
-module v1
+module github.com/achill3s541/PriceTracker
 
 go 1.19
 

@@ -76,7 +76,7 @@ func parseContent(website string, filename string, time string) ([]float64, []st
 	})
 	//The website's content is converting to JSON's format.
 	var shops []*product
-	for i, _ := range gotVariantFromContent {
+	for i := range gotVariantFromContent {
 		shops, comparePriceFromContent, compareVariantFromContent = append(shops, &product{ShopsName: "zooplus", Variant: gotVariantFromContent[i], Price: gotPriceFromContent[i], AddressURL: string(website), LastUpadateDate: time}), append(gotPriceFromContent), append(gotVariantFromContent)
 
 	}
@@ -118,7 +118,7 @@ func readingJSONFile(filename string) ([]float64, error) {
 
 func compareContToJSON(variant []string, priceJSON []float64, priceContent []float64, website string) error {
 	// This function compares JSON's data to the fresh Website's data, if the old price has changed, the message will be displayed and the email will be sent.
-	for i, _ := range variant {
+	for i := range variant {
 		if priceJSON[i] > priceContent[i] {
 			email := fmt.Sprintf("Dla produktu %v w wariancie %v pojawiła się tańsza wersja.\nStara cena to: %0.2f\n Nowa cena to: %0.2f \n", website, variant[i], priceJSON[i], priceContent[i])
 			emailSender(email)
