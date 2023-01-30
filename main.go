@@ -116,14 +116,14 @@ func compareContToJSON(variantJSON []string, variant []string, priceJSON []float
 	// This function compares JSON's data to the fresh Website's data, if the old price has changed, the message will be displayed and the email will be sent.
 	for i := range variant {
 		if priceJSON[i] > priceContent[i] {
-			email := fmt.Sprintf("Dla produktu %v w wariancie %v pojawiła się tańsza wersja.\nStara cena to: %0.2f\n Nowa cena to: %0.2f \n", website, variant[i], priceJSON[i], priceContent[i])
-			err := emailSender(email)
+			email := fmt.Sprintf("Dla produktu %v w wariancie %v pojawiła się tańsza wersja.\nStara cena to: %0.2f\nAktualna cena to: %0.2f \n", website, variant[i], priceJSON[i], priceContent[i])
+			err := emailSender(email, "newPrice")
 			if err != nil {
 				return err
 			}
 		} else if priceAlert[i] > priceContent[i] && variantJSON[i] == variant[i] {
-			email := fmt.Sprintf("Produkt %v w wariancie %v osiągnął cenę ze wskazanego progu.\nStara cena to: %0.2f\n Nowa cena to: %0.2f \n", website, variant[i], priceJSON[i], priceContent[i])
-			err := emailSender(email)
+			email := fmt.Sprintf("Produkt %v w wariancie %v osiągnął cenę ze wskazanego progu.\nStara cena to: %0.2f\nAktualna cena to: %0.2f \n", website, variant[i], priceJSON[i], priceContent[i])
+			err := emailSender(email, "alertPrice")
 			if err != nil {
 				return err
 			}
@@ -132,13 +132,18 @@ func compareContToJSON(variantJSON []string, variant []string, priceJSON []float
 	return nil
 }
 
-func emailSender(messageInput string) error {
+func emailSender(messageInput string, subjectPrefix string) error {
 	//This function is responsible for sending email if the Webiste's price is lower then JSON's price.
+	var subject string
 	authentication := smtp.PlainAuth("", "<fill_email_addres>", "<fill_password>", "smtp.gmail.com")
 	sendingTo := []string{"<fill_email_addres>"}
 	sender := fmt.Sprintf("From: <%s>\r\n", "<fill_email_addres>")
 	receiver := fmt.Sprintf("To: <%s>\r\n", "<fill_email_addres>")
-	subject := "Subject: Message from Tracker\r\n"
+	if subjectPrefix == "alertPrice" {
+		subject = "Subject: [Alert!] The price has reached the alarm value \r\n"
+	} else {
+		subject = "Subject: The price on the website is lower \r\n"
+	}
 	body := messageInput + "\r\n"
 	//This variable builds a request for email
 	messaging := sender + receiver + subject + "\r\n" + body
