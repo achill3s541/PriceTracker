@@ -72,12 +72,12 @@ func parseContent(website string, filename string, time string, priceAlert []flo
 	}
 	pageContent, err := json.Marshal(shop{Shops: shops})
 	if err != nil {
-		return nil, nil, "", fmt.Errorf("Test1")
+		return nil, nil, "", fmt.Errorf("cannot parse the array: %s", err)
 	}
 	//The website's content is wroten to JSON's file.
 	err = os.WriteFile(filename, pageContent, 0644)
 	if err != nil {
-		return nil, nil, "", fmt.Errorf("Test2")
+		return nil, nil, "", fmt.Errorf("cannot overwrite/create file: %s", err)
 	}
 	return comparePriceFromContent, compareVariantFromContent, website, nil
 }
@@ -135,10 +135,13 @@ func compareContToJSON(variantJSON []string, variant []string, priceJSON []float
 func emailSender(messageInput string, subjectPrefix string) error {
 	//This function is responsible for sending email if the Webiste's price is lower then JSON's price.
 	var subject string
-	authentication := smtp.PlainAuth("", "<fill_email_addres>", "<fill_password>", "smtp.gmail.com")
-	sendingTo := []string{"<fill_email_addres>"}
-	sender := fmt.Sprintf("From: <%s>\r\n", "<fill_email_addres>")
-	receiver := fmt.Sprintf("To: <%s>\r\n", "<fill_email_addres>")
+	envEmailSenderUser := os.Getenv("envEmailSenderUser")
+	envEmailSenderPassword := os.Getenv("envEmailSenderPassword")
+	envEmailReceiver := os.Getenv("envEmailReceiver")
+	authentication := smtp.PlainAuth("", envEmailSenderUser, envEmailSenderPassword, "smtp.gmail.com")
+	sendingTo := []string{envEmailReceiver}
+	sender := fmt.Sprintf("From: <%s>\r\n", envEmailSenderUser)
+	receiver := fmt.Sprintf("To: <%s>\r\n", envEmailReceiver)
 	if subjectPrefix == "alertPrice" {
 		subject = "Subject: [Alert!] The price has reached the alarm value \r\n"
 	} else {
@@ -147,7 +150,7 @@ func emailSender(messageInput string, subjectPrefix string) error {
 	body := messageInput + "\r\n"
 	//This variable builds a request for email
 	messaging := sender + receiver + subject + "\r\n" + body
-	err := smtp.SendMail("smtp.gmail.com:587", authentication, "<fill_email_addres>", sendingTo, []byte(messaging))
+	err := smtp.SendMail("smtp.gmail.com:587", authentication, envEmailSenderUser, sendingTo, []byte(messaging))
 	if err != nil {
 		return fmt.Errorf("the system cannot send email message: %s", err)
 	}
@@ -162,7 +165,7 @@ func main() {
 	if err != nil {
 		fmt.Println(err)
 	}
-	comparePriceFromContent, compareVariantFromContent, website, err := parseContent("https://www.zooplus.pl/shop/koty/zwirek_dla_kota/benek/compact/335113", "tracker_output.json", currentTime, priceAlertFromJSON)
+	comparePriceFromContent, compareVariantFromContent, website, err := parseContent("https://www.zooplus.pl/shop/koty/zwirek_dla_kota/benek/compact/460202", "tracker_output.json", currentTime, priceAlertFromJSON)
 	if err != nil {
 		fmt.Println(err)
 	}
