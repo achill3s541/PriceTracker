@@ -19,4 +19,9 @@ If you would like to track other product, you should to change the URL in main f
 <b>MANUAL:</b>
 
 This program should be run by cron. <br>For example it can be used to compare the product's price with the website's price every 4 hours.
-<br>Before you run the program first time, you should create the file called <b>tracker_output.json</b>. 
+1. Before you run the program first time, you should to create the OS's environments:
+- The <b>envEmailSenderUser</b> as a value give your's email account.
+- The <b>envEmailSenderPassword</b> as a value give your's email account password.																																			
+- The <b>envEmailReceiver</b> as a value give the receiver's email account.
+
+2. After that you should to create the file called <b>tracker_output.json</b>. 
