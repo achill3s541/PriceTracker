@@ -30,20 +30,20 @@ type product struct {
 
 // var compareVariantFromJSON []string
 // var compareURLFromJSON []string
-func parseContent(website string, filename string, time string, priceAlert []float64) ([]float64, []string, string, error) {
+func parseContent(website string, filename string, time string, priceAlert []float64) ([]float64, []string, error) {
 	var gotPriceFromContent []float64
 	var comparePriceFromContent []float64
 	var gotVariantFromContent []string
 	var compareVariantFromContent []string
 	url, err := http.Get(website)
 	if err != nil {
-		return nil, nil, "", fmt.Errorf("the website doesn't work, check the URL is properly")
+		return nil, nil, fmt.Errorf("the website doesn't work, check the URL is properly")
 	}
 	defer url.Body.Close()
 	// The website's contentet is saved to the variable
 	page, err := goquery.NewDocumentFromReader(url.Body)
 	if err != nil {
-		return nil, nil, "", fmt.Errorf("cannot to read the website's content, try again later")
+		return nil, nil, fmt.Errorf("cannot to read the website's content, try again later")
 	}
 	page.Find(".z-price__amount").Each(func(i int, pageOutput *goquery.Selection) {
 		// This regular expresion is used to find a price and convert it to float64
@@ -72,14 +72,14 @@ func parseContent(website string, filename string, time string, priceAlert []flo
 	}
 	pageContent, err := json.Marshal(shop{Shops: shops})
 	if err != nil {
-		return nil, nil, "", fmt.Errorf("cannot parse the array: %s", err)
+		return nil, nil, fmt.Errorf("cannot parse the array: %s", err)
 	}
 	//The website's content is wroten to JSON's file.
 	err = os.WriteFile(filename, pageContent, 0644)
 	if err != nil {
-		return nil, nil, "", fmt.Errorf("cannot overwrite/create file: %s", err)
+		return nil, nil, fmt.Errorf("cannot overwrite/create file: %s", err)
 	}
-	return comparePriceFromContent, compareVariantFromContent, website, nil
+	return comparePriceFromContent, compareVariantFromContent, nil
 }
 
 func readingJSONFile(filename string) ([]float64, []float64, []string, error) {
@@ -159,13 +159,14 @@ func emailSender(messageInput string, subjectPrefix string) error {
 }
 
 func main() {
-	var website string
+	website := os.Getenv("envURLAddress")
+	fmt.Println(website)
 	currentTime := time.Now().Format("02-01-2006 15:04:05")
 	priceAlertFromJSON, comparePriceFromJSON, variantFromJSON, err := readingJSONFile("tracker_output.json")
 	if err != nil {
 		fmt.Println(err)
 	}
-	comparePriceFromContent, compareVariantFromContent, website, err := parseContent("https://www.zooplus.pl/shop/koty/zwirek_dla_kota/benek/compact/460202", "tracker_output.json", currentTime, priceAlertFromJSON)
+	comparePriceFromContent, compareVariantFromContent, err := parseContent(website, "tracker_output.json", currentTime, priceAlertFromJSON)
 	if err != nil {
 		fmt.Println(err)
 	}
